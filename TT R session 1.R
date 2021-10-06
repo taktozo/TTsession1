@@ -127,3 +127,242 @@ labels(shocks) <-
   c(genderhousehold = "Gender of the head of household",
     sec3a_sec3a1 = "Which shocks did you experience")
 
+
+# Shocks and social networks ----------------------------------------------
+
+sam_data_004 <- read_excel("sam_data_001.xlsx", sheet = 4)
+names(sam_data_004) <- gsub("sec3b/", "", names(sam_data_004))
+adaptation <- sam_data_004 %>%
+  select(sec3b1, 5:18)
+
+# Shocks and local knowledge systems --------------------------------------
+
+sam_data_005 <- read_excel("sam_data_001.xlsx", sheet = 5) %>%
+  clean_names()
+names(sam_data_005) <- gsub("sec4a_", "", names(sam_data_005))
+iks <- sam_data_005 %>%
+  select(1:2)
+labels(iks) <- c(sec4a1 = "Changes in weather pattern",
+                 sec4a2 = "Are the ways that local people predict or know about weather other than through radio")
+iks2 <- sam_data_001 %>%
+  select(genderhousehold, sec4a4, sec4a6)
+labels(iks2) <- c(genderhousehold = "Gender of household head",
+                  sec4a4 = "In your view, are the local weather prediction systems useful?",
+                  sec4a6 = "Have you used this informatoon to plan your agricutural activities?")
+
+# Sacred sites ------------------------------------------------------------
+
+sacred_sites <- sam_data_001 %>%
+  select(sec4b1, sec4b2)
+
+# Sacred animals, birds, and trees ----------------------------------------
+
+sam_data_006 <- read_excel("sam_data_001.xlsx", sheet = 6) %>%
+  clean_names()
+
+# Recoding sam_data_006$section4c_sec4c1b into sam_data_006$sectio --------
+
+sam_data_006$section4c_sec4c1b_rec <-
+  fct_recode(
+    sam_data_006$section4c_sec4c1b,
+    "Mariti" = "Manti",
+    "Mishumbi, Mukwakwa" = "Mishumbi ne Mukwakwa",
+    "Jackal" = "Gava",
+    "Mariti, Mbira" = "Mariti Mbira",
+    "Mbira" = "mbira",
+    "Mariti, Kowiro" = "Mariti, kowiro",
+    "Baboon, Jackal, Mbira" = "Mbira,  Gava,  Gudo",
+    "Baboon,  Chikovo" = "Baboon,  chikovo",
+    "Mariti, Dendera, Kowiro" = "Riti/Dendera,kowiro",
+    "Jackal" = "Gava/Jackle",
+    "Jichidza" = "Majijidza",
+    "Mariti, Kowiro" = "Kowiri, Mariti",
+    "Mariti, Kowiro" = "Mariti , kowiro",
+    "Jackal, Fox" = "Gava/Fox",
+    "Dendera" = "Matendera",
+    "Mariti" = "Riti",
+    "Kowiro, Owls, Masongano" = "Kowiro, Owls Masongano",
+    "Owl" = "Owls",
+    "Hyena" = "Hyenas",
+    "Baboon" = "Baboons",
+    "Mukamba, Mukwa, Mutuwa trees" = "Mukamba tree(Mukwa tree),Mutuwa",
+    "Mutuwa, Mubvumira, Mukamba trees" = "Mutuwa/mubvumira/ mukamba trees"
+  )
+
+abt <- sam_data_006 %>%
+  select(1:2)
+labels(abt) <-
+  c(section4c_sec4c1a = "Is there a sacred bird, tree, animal?",
+    section4c_sec4c1b = "Indicate the name")
+
+
+#  Access to services and programs --------------------------------------
+
+sam_data_007 <- read_excel("sam_data_001.xlsx", sheet = 7) %>%
+  clean_names()
+
+sam_data_007 <-
+  left_join(pt, sam_data_007, by = c("index" = "parent_index")) %>%
+  select(
+    genderhousehold,
+    section5_sec5q1,
+    section5_sec5q2,
+    section5_sec5q3,
+    section5_sec5q4,
+    section5_sec5q5,
+    section5_sec5q6,
+    section5_sec5q7,
+    section5_sec5q8,
+    section5_sec5q9
+  )
+
+sam_data_007$section5_sec5q2 <-
+  fct_recode(
+    sam_data_007$section5_sec5q2,
+    "Social Welfare" = "Social walfare",
+    "Government" = "Gvt",
+    "BEAM" = "Beam",
+    "Social Welfare" = "Social welfare",
+    "Agritex" = "Agritex Officers",
+    "Vet Services" = "Veterinary Services",
+    "Vet Services" = "Vetinary services",
+    "Agritex" = "Agritex Officer",
+    "Vet Services" = "Veterinary Officers",
+    "Vet Services" = "Veterinary",
+    "Donors" = "USAID",
+    "Agritex" = "Agritex officers",
+    "Donors" = "NAC",
+    "Agritex" = "Arex",
+    "Donors" = "NGO",
+    "Agritex" = "Agritex offices",
+    "Vet Services" = "Verterinary services",
+    "Donors" = "Usaid",
+    "Donors" = "WfP",
+    "Donors" = "Donor",
+    "Government" = "GVT",
+    "Donors" = "Dor",
+    "Vet Services" = "Vertinary"
+  )
+
+sam_data_007 <- sam_data_007 %>%
+  rename(
+    `Programmes` = section5_sec5q1,
+    `Source` = section5_sec5q2,
+    `Did_HH_Travel` = section5_sec5q3,
+    `HH_Member_Travelled` = section5_sec5q4,
+    `Where_travelled` = section5_sec5q5,
+    `Form_of_Transport` = section5_sec5q6,
+    `Distance_in_km` = section5_sec5q7,
+    `Duration_in_minutes` = section5_sec5q8,
+    `Cost_of_Transport` = section5_sec5q9
+  )
+
+labels(sam_data_007) = c(
+  Programmes = "Services and programmes",
+  Source = "Who provided support?",
+  Did_HH_Travel = "Did hh member travelled to get suppot?",
+  HH_Member_Travelled = "Who travelled?",
+  Where_travelled = "Where did he/she travelled?",
+  Form_of_Transport = "Form of transport used",
+  Distance_in_km = "Distance in kilometres",
+  Duration_in_minutes = "Time taken in minutes",
+  Cost_of_Transport = "Cost of transport"
+  
+)
+
+# Land --------------------------------------------------------------------
+
+sam_data_008 <- read_excel("sam_data_001.xlsx", sheet = 8) %>%
+  clean_names()
+sam_data_008 <- sam_data_008 %>%
+  select(c(-3, -11:-17, -20:-39))
+
+labels(sam_data_008) = c(
+  plot_questions_plot_id = "Plot Number",
+  plot_questions_sec6a2	= "Type of Land",
+  plot_questions_sec6a4	= "Irrigated",
+  plot_questions_sec6a5	= "Tenure",
+  plot_questions_sec6a6	= "Land Acquired Through",
+  plot_questions_sec6a7 = "Principal Use",
+  plot_questions_sec6a8 = "Crops Rotated",
+  plot_questions_sec6a9a = "Degradation",
+  plot_questions_sec6a9b = "Form of Degradation",
+  plot_questions_sec6a10 = "Extent of Degradation",
+  plot_questions_sec6a11 = "Manager"
+)
+
+sam_data_008 <- sam_data_008 %>%
+  rename(
+    `Plot_Number` = plot_questions_plot_id,
+    `Type_of_Land` = plot_questions_sec6a2,
+    `Irrigated` = plot_questions_sec6a4,
+    `Tenure` = plot_questions_sec6a5,
+    `Land_Acquired_Through` = plot_questions_sec6a6,
+    `Principal_Use` = plot_questions_sec6a7,
+    `Crops_Rotated` = plot_questions_sec6a8,
+    `Degradation` = plot_questions_sec6a9a,
+    `Form_of_Degradation` = plot_questions_sec6a9b,
+    `Extent_of_Degradation` = plot_questions_sec6a10,
+    `Who_Manage_the_field` = plot_questions_sec6a11
+  )
+
+
+# Crop Production - Last Rainy Season (2018/2019) -------------------------
+
+sam_data_009 <- read_excel("sam_data_001.xlsx", sheet = 9) %>%
+  clean_names() %>% select(
+    sec6b_sec6b2,
+    sec6b_sec6b3,
+    sec6b_sec6b4,
+    sec6b_sec6b5,
+    sec6b_sec6b6,
+    sec6b_sec6b7,
+    sec6b_sec6b8,
+    sec6b_sec6b8a,
+    sec6b_sec6b8b,
+    sec6b_sec6b9,
+    sec6b_sec6b9a,
+    sec6b_sec6b9b
+  )
+
+sam_data_009 <- sam_data_009 %>%
+  rename(
+    `Plot_Id` = sec6b_sec6b2,
+    `Crop` = sec6b_sec6b3,
+    `Type_of_Crop_Stand` = sec6b_sec6b4,
+    `Entire_Plot` = sec6b_sec6b5,
+    `Area_Under_Crop` = sec6b_sec6b6,
+    `Seed_Variety` = sec6b_sec6b7
+  )
+
+
+# Recoding sam_data_009$sec6b_sec6b8 into sam_data_009$Total_Harve --------
+
+sam_data_009$Total_Harvest_in_kgs <-
+  fct_recode(
+    sam_data_009$sec6b_sec6b8,
+    "90" = "90Kg Bag",
+    "25" = "25 Kg Bag",
+    "1" = "Kilogram",
+    "50" = "50 Kg Bag",
+    "75" = "75Kg Bag"
+  )
+
+sam_data_009$Expected_Harvest_in_kgs <-
+  fct_recode(
+    sam_data_009$sec6b_sec6b9,
+    "90" = "90Kg Bag",
+    "25" = "25 Kg Bag",
+    "1" = "Kilogram",
+    "50" = "50 Kg Bag",
+    "75" = "75Kg Bag")
+
+## Recoding sam_data_009$Total_Harvest_in_kgs into sam_data_009$Total_Harvest_in_kgs_rec
+
+sam_data_009$Total_Harvest_in_kgs_rec <- fct_recode(sam_data_009$Total_Harvest_in_kgs,
+                                                    "25.0" = "25",
+                                                    "50.0" = "50",
+                                                    "75.0" = "75",
+                                                    "90.0" = "90",
+                                                    "1.0" = "1"
+)
