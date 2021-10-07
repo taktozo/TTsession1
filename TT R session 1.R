@@ -366,3 +366,95 @@ sam_data_009$Total_Harvest_in_kgs_rec <- fct_recode(sam_data_009$Total_Harvest_i
                                                     "90.0" = "90",
                                                     "1.0" = "1"
 )
+
+sam_data_009$Total_Harvest_in_kgs_rec <- fct_explicit_na(sam_data_009$Total_Harvest_in_kgs_rec, "0")
+sam_data_009$Total_Harvest_in_kgs_rec <- as.numeric(as.character(sam_data_009$Total_Harvest_in_kgs_rec))
+
+## Recoding sam_data_009$sec6b_sec6b8a into sam_data_009$sec6b_sec6b8a_rec
+
+sam_data_009$sec6b_sec6b8a_rec <- as.character(sam_data_009$sec6b_sec6b8a)
+sam_data_009$sec6b_sec6b8a_rec <- fct_recode(sam_data_009$sec6b_sec6b8a_rec,
+                                             "1.0" = "1",
+                                             "2.0" = "2",
+                                             "0.0" = "0",
+                                             "3.0" = "3",
+                                             "4.0" = "4",
+                                             "6.0" = "6",
+                                             "7.0" = "7",
+                                             "500.0" = "500",
+                                             "350.0" = "350",
+                                             "260.0" = "260",
+                                             "200.0" = "200",
+                                             "100.0" = "100",
+                                             "50.0" = "50",
+                                             "9.0" = "9",
+                                             "5.0" = "5",
+                                             "20.0" = "20",
+                                             "15.0" = "15",
+                                             "12.0" = "12"
+)
+
+sam_data_009$sec6b_sec6b8a_rec <- fct_explicit_na(sam_data_009$sec6b_sec6b8a_rec, "0.0")
+sam_data_009$sec6b_sec6b8a_rec <- as.numeric(as.character(sam_data_009$sec6b_sec6b8a_rec))
+
+sam_data_009$Total_Harvest_in_kgs_ <- (sam_data_009$Total_Harvest_in_kgs_rec * sam_data_009$sec6b_sec6b8a_rec)
+
+
+# Crop production ---------------------------------------------------------
+
+sam_data_010 <- read_excel("sam_data_001.xlsx", sheet = 10) %>%
+  clean_names()
+names(sam_data_010) <- gsub("sec6c_", "", names(sam_data_010))
+
+crops <- sam_data_010 %>%  select(1:3, 29:30)
+labels(crops) <- c(
+  sec6c1 = "Name of crop grown",
+  sec6c2 = "Trend in proportion under this croop",
+  sec6c3 =  "Explain the change in land size",
+  sec6c4 = "Production levels in 2009",
+  sec6c5 = "Explain the change in production"
+)
+
+
+# Crop production - changing preferences ----------------------------------
+
+sam_data_011 <- read_excel("sam_data_001.xlsx", sheet = 11) %>%
+  clean_names()
+crops_1980  <- sam_data_011 %>%
+  select(1:2)
+labels(crops_1980) <- c(sec6d_sec6d1 = "Crop dropped since 1980",
+                        sec6d_sec6d2 = "Why was the crop dropped")
+
+
+# Crop production and changing preferences adopted ------------------------
+
+sam_data_012 <- read_excel("sam_data_001.xlsx", sheet = 12) %>%
+  clean_names()
+crops_1980a  <- sam_data_012 %>%
+  select(1:2)
+labels(crops_1980a) <- c(sec6dd_sec6d3 = "Crop dropped since 1980",
+                         sec6dd_sec6d4 = "Why was the crop dropped")
+
+
+# Watershed condition and management --------------------------------------
+
+sam_data_013 <- read_excel("sam_data_001.xlsx", sheet = 13) %>%
+  clean_names() %>% select(sec7a_sec7a1,
+                           sec7a_sec7a2,
+                           sec7a_sec7a3,
+                           sec7a_sec7a4)
+
+sam_data_013 <- sam_data_013 %>%
+  rename(
+    `Type_of_change` = sec7a_sec7a1,
+    `Observed_in_comm` = sec7a_sec7a2,
+    `Observed_in_own_field` = sec7a_sec7a3,
+    `Prevention_measure` = sec7a_sec7a4
+  )
+
+labels(sam_data_013) = c(
+  Type_of_change = "Type of change",
+  Observed_in_comm = "Change observed in community",
+  Observed_in_own_field = "Change observed in own field",
+  Prevention_measures = "Prevention measure"
+)
